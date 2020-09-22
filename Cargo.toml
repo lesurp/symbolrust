@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "symbolrust_core",
+    "symbolrust_macros",
+    "symbolrust_cli",
+]
