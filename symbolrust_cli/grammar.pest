@@ -1,0 +1,22 @@
+identifier = @{ ASCII_ALPHA ~ ASCII_ALPHANUMERIC* }
+
+num = _{ constant | var }
+    constant = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
+        int = _{ ("+" | "-")? ~ ASCII_DIGIT+ }
+    var = { identifier ~ !"(" }
+
+
+operation = _{ add | subtract | multiply | divide | power }
+    add      = { "+" }
+    subtract = { "-" }
+    multiply = { "*" }
+    divide   = { "/" }
+    power    = { "^" }
+
+expr = _{ term ~ (operation ~ term)* }
+term = _{ num | "(" ~ expr ~ ")" | function_call }
+    function_call = { identifier ~ "(" ~ expr ~ ("," ~ expr )* ~ ")" }
+
+calculation = _{ SOI? ~ expr }
+
+WHITESPACE = _{ " " | "\t" | "\n" }
