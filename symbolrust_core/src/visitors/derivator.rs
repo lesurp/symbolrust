@@ -8,6 +8,11 @@ pub struct Derivator {
 impl Visitor for Derivator {
     type Output = Node;
 
+    fn build_exponential(&self, n: &Exponential) -> Node {
+        let exp = n.exponent.accept_visitor(self);
+        exp * n
+    }
+
     fn build_power(&self, n: &Power) -> Node {
         let x_dot = n.val.accept_visitor(self);
         let new_exp = n.exponent.as_ref() - 1;

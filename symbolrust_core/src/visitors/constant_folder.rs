@@ -24,25 +24,36 @@ impl ConstantFolder {
 
 impl Visitor for ConstantFolder {
     type Output = Node;
+    fn build_exponential(&self, n: &Exponential) -> Node {
+        let exponent = n.exponent.accept_visitor(self);
+        match exponent {
+            Node::Constant(Constant::Int(exp)) => std::f64::consts::E.powi(exp as i32).into(),
+            Node::Constant(Constant::Fp(exp)) => std::f64::consts::E.powf(exp).into(),
+            _ => Exponential::new(exponent).into(),
+        }
+    }
+
     fn build_power(&self, n: &Power) -> Node {
-        match (n.val.as_ref(), n.exponent.as_ref()) {
+        let val = n.val.accept_visitor(self);
+        let exponent = n.exponent.accept_visitor(self);
+        match (val, exponent) {
             (Node::Constant(Constant::Int(x)), Node::Constant(Constant::Int(y))) => {
                 // FIXME: error handling?
                 let abs_res = Constant::new(x.checked_pow(y.abs() as u32).unwrap());
-                if *y < 0 {
+                if y < 0 {
                     Inverse::new(abs_res).into()
                 } else {
                     abs_res.into()
                 }
             }
             (Node::Constant(Constant::Fp(x)), Node::Constant(Constant::Int(y))) => {
-                Constant::new(x.powi(*y as i32)).into()
+                Constant::new(x.powi(y as i32)).into()
             }
             (Node::Constant(Constant::Fp(x)), Node::Constant(Constant::Fp(y))) => {
-                Constant::new(x.powf(*y)).into()
+                Constant::new(x.powf(y)).into()
             }
             (Node::Constant(Constant::Int(x)), Node::Constant(Constant::Fp(y))) => {
-                Constant::new((*x as f64).powf(*y)).into()
+                Constant::new((x as f64).powf(y)).into()
             }
             (x, Node::Constant(Constant::Int(y))) => match y {
                 0 => Constant::new(1).into(),

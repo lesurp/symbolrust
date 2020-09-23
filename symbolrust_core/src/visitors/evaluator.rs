@@ -7,6 +7,12 @@ pub struct Evaluator {
 
 impl Visitor for Evaluator {
     type Output = Node;
+
+    fn build_exponential(&self, n: &Exponential) -> Node {
+        let exp = n.exponent.accept_visitor(self);
+        Exponential::new(exp).into()
+    }
+
     fn build_power(&self, n: &Power) -> Node {
         let x = n.val.accept_visitor(self);
         let y = n.exponent.accept_visitor(self);

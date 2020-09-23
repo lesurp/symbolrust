@@ -41,6 +41,11 @@ impl PrettyPrinter {
 impl Visitor for PrettyPrinter {
     type Output = String;
 
+    fn build_exponential(&self, n: &Exponential) -> String {
+        let exp = n.exponent.accept_visitor(self);
+        "exp(".to_owned() + &exp + ")"
+    }
+
     fn build_power(&self, n: &Power) -> String {
         let xstr = n.val.accept_visitor(self);
         let ystr = n.exponent.accept_visitor(self);

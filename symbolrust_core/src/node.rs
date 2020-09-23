@@ -17,4 +17,5 @@ symbolrust_macros::boiler_plate_chef! {
     Constant,
     Negation,
     Inverse,
+    Exponential,
 }
