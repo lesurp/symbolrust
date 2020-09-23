@@ -110,6 +110,20 @@ fn single_op(
                             #op_wrapper::from_binary::<_, _, #inverse>(self.clone(), rhs).into()
                         }
                     }
+
+                    impl std::ops::#operator<&#rhs> for #lhs {
+                        type Output = Node;
+                        fn #fn_name(self, rhs: &#rhs) -> Self::Output {
+                            #op_wrapper::from_binary::<_, _, #inverse>(self, rhs.clone()).into()
+                        }
+                    }
+
+                    impl std::ops::#operator<&#rhs> for &#lhs {
+                        type Output = Node;
+                        fn #fn_name(self, rhs: &#rhs) -> Self::Output {
+                            #op_wrapper::from_binary::<_, _, #inverse>(self.clone(), rhs.clone()).into()
+                        }
+                    }
             };
         }
     }
@@ -146,6 +160,13 @@ fn single_op(
                 self.append::<_, #inverse>(rhs).into()
             }
         }
+
+        impl std::ops::#operator<#rhs> for &#op_wrapper {
+            type Output = Node;
+            fn #fn_name(self, rhs: #rhs) -> Self::Output {
+                self.clone().append::<_, #inverse>(rhs).into()
+            }
+        }
         };
     }
 
@@ -156,6 +177,27 @@ fn single_op(
                 type Output = Node;
                 fn #fn_name(self, rhs: #op_wrapper) -> Self::Output {
                     #op_wrapper::fuse::<#inverse>(self, rhs).into()
+                }
+            }
+
+            impl std::ops::#operator<#op_wrapper> for &#op_wrapper {
+                type Output = Node;
+                fn #fn_name(self, rhs: #op_wrapper) -> Self::Output {
+                    #op_wrapper::fuse::<#inverse>(self.clone(), rhs).into()
+                }
+            }
+
+            impl std::ops::#operator<&#op_wrapper> for #op_wrapper {
+                type Output = Node;
+                fn #fn_name(self, rhs: &#op_wrapper) -> Self::Output {
+                    #op_wrapper::fuse::<#inverse>(self, rhs.clone()).into()
+                }
+            }
+
+            impl std::ops::#operator<&#op_wrapper> for &#op_wrapper {
+                type Output = Node;
+                fn #fn_name(self, rhs: &#op_wrapper) -> Self::Output {
+                    #op_wrapper::fuse::<#inverse>(self.clone(), rhs.clone()).into()
                 }
             }
     };
@@ -179,6 +221,16 @@ fn single_op(
                         *self = match fles {
                             Node::#op_wrapper(lhs) =>   lhs.append::<_, #inverse>(rhs) ,
                             lhs =>   { #op_wrapper::from_binary::<_, _, #inverse>(lhs, rhs) },
+                        }.into();
+                    }
+                }
+
+                impl std::ops::#assign_op<&#rhs> for Node {
+                    fn #assign_fn_name(&mut self, rhs: &#rhs)  {
+                        let fles = std::mem::replace(self, Constant::new(0).into());
+                        *self = match fles {
+                            Node::#op_wrapper(lhs) =>   lhs.append::<_, #inverse>(rhs.clone()) ,
+                            lhs =>   { #op_wrapper::from_binary::<_, _, #inverse>(lhs, rhs.clone()) },
                         }.into();
                     }
                 }
