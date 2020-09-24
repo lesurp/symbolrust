@@ -1,5 +1,5 @@
 use crate::node::Node;
-use crate::ops::Inverse;
+use crate::ops::Power;
 
 /// TODO: make some generic Binary struct so we can more easily implement visitors
 #[derive(Clone, Debug, PartialEq)]
@@ -13,25 +13,32 @@ impl Multiplication {
         Multiplication { members }
     }
 
-    pub fn from_binary<L: Into<Node>, R: Into<Node>, const INVERSE_OP: bool>( lhs: L,
+    pub fn from_binary<L: Into<Node>, R: Into<Node>, const INVERSE_OP: bool>(
+        lhs: L,
         rhs: R,
     ) -> Self {
-        let lhs = lhs.into();
-        let rhs = if INVERSE_OP {
-            Inverse::new(rhs).into()
-        } else {
-            rhs.into()
-        };
-        assert!(!matches!(lhs, Node::Multiplication(_)));
-        assert!(!matches!(rhs, Node::Multiplication(_)));
-        Multiplication {
-            members: vec![lhs, rhs],
+        match (lhs.into(), rhs.into()) {
+            (Node::Multiplication(lhs), Node::Multiplication(rhs)) => {
+                Multiplication::fuse::<INVERSE_OP>(lhs, rhs)
+            }
+            (Node::Multiplication(lhs), rhs) => lhs.append::<_, INVERSE_OP>(rhs),
+            (lhs, Node::Multiplication(rhs)) => rhs.prepend::<_, INVERSE_OP>(lhs),
+            (lhs, rhs) => {
+                let rhs = if INVERSE_OP {
+                    Power::inverse(rhs).into()
+                } else {
+                    rhs
+                };
+                Multiplication {
+                    members: vec![lhs, rhs],
+                }
+            }
         }
     }
 
     pub fn append<N: Into<Node>, const INVERSE_OP: bool>(mut self, rhs: N) -> Self {
         let rhs = if INVERSE_OP {
-            Inverse::new(rhs).into()
+            Power::inverse(rhs).into()
         } else {
             rhs.into()
         };
@@ -46,7 +53,7 @@ impl Multiplication {
         let mut n = vec![lhs];
         n.extend(self.members.into_iter().map(|elem| {
             if INVERSE_OP {
-                Inverse::new(elem).into()
+                Power::inverse(elem).into()
             } else {
                 elem
             }
@@ -58,7 +65,7 @@ impl Multiplication {
     pub fn fuse<const INVERSE_OP: bool>(mut lhs: Multiplication, rhs: Multiplication) -> Self {
         lhs.members.extend(rhs.members.into_iter().map(|elem| {
             if INVERSE_OP {
-                Inverse::new(elem).into()
+                Power::inverse(elem).into()
             } else {
                 elem
             }

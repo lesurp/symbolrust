@@ -1,4 +1,5 @@
 use crate::node::Node;
+use crate::ops::Constant;
 
 /// TODO: make some generic Binary struct so we can more easily implement visitors
 #[derive(Clone, Debug, PartialEq)]
@@ -8,10 +9,24 @@ pub struct Power {
 }
 
 impl Power {
-    pub fn new(val: Node, exponent: Node) -> Self {
+    pub fn exp<N: Into<Node>>(exponent: N) -> Self {
         Power {
-            val: val.into(),
-            exponent: exponent.into(),
+            val: Constant::new(std::f64::consts::E).into(),
+            exponent: exponent.into().into(),
+        }
+    }
+
+    pub fn inverse<N: Into<Node>>(val: N) -> Self {
+        Power {
+            val: val.into().into(),
+            exponent: Constant::new(-1).into(),
+        }
+    }
+
+    pub fn new<L: Into<Node>, R: Into<Node>>(val: L, exponent: R) -> Self {
+        Power {
+            val: val.into().into(),
+            exponent: exponent.into().into(),
         }
     }
 

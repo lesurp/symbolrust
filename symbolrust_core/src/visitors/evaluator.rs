@@ -8,9 +8,9 @@ pub struct Evaluator {
 impl Visitor for Evaluator {
     type Output = Node;
 
-    fn build_exponential(&self, n: &Exponential) -> Node {
-        let exp = n.exponent.accept_visitor(self);
-        Exponential::new(exp).into()
+    fn build_log(&self, n: &Log) -> Node {
+        let val = n.val.accept_visitor(self);
+        Log::new(val).into()
     }
 
     fn build_power(&self, n: &Power) -> Node {
@@ -23,9 +23,6 @@ impl Visitor for Evaluator {
         -n.val.accept_visitor(self)
     }
 
-    fn build_inverse(&self, n: &Inverse) -> Node {
-        1 / n.val.accept_visitor(self)
-    }
 
     fn build_addition(&self, n: &Addition) -> Node {
         let ms = n.members.iter().map(|m| m.accept_visitor(self)).collect();

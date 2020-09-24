@@ -16,17 +16,16 @@ impl Addition {
         lhs: L,
         rhs: R,
     ) -> Self {
-        let lhs = lhs.into();
-        let rhs = if INVERSE_OP {
-            Negation::new(rhs).into()
-        } else {
-            rhs.into()
-        };
-
-        assert!(!matches!(lhs, Node::Addition(_)));
-        assert!(!matches!(rhs, Node::Addition(_)));
-        Addition {
-            members: vec![lhs, rhs],
+        match (lhs.into(), rhs.into()) {
+            (Node::Addition(lhs), Node::Addition(rhs)) => Addition::fuse::<INVERSE_OP>(lhs, rhs),
+            (Node::Addition(lhs), rhs) => lhs.append::<_, INVERSE_OP>(rhs),
+            (lhs, Node::Addition(rhs)) => rhs.prepend::<_, INVERSE_OP>(lhs),
+            (lhs, rhs) => {
+                let rhs = if INVERSE_OP { -rhs } else { rhs };
+                Addition {
+                    members: vec![lhs, rhs],
+                }
+            }
         }
     }
 

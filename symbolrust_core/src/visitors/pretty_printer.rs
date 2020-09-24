@@ -41,23 +41,26 @@ impl PrettyPrinter {
 impl Visitor for PrettyPrinter {
     type Output = String;
 
-    fn build_exponential(&self, n: &Exponential) -> String {
-        let exp = n.exponent.accept_visitor(self);
-        "exp(".to_owned() + &exp + ")"
+    fn build_log(&self, n: &Log) -> String {
+        let val = n.val.accept_visitor(self);
+        "ln(".to_owned() + &val + ")"
     }
 
     fn build_power(&self, n: &Power) -> String {
-        let xstr = n.val.accept_visitor(self);
         let ystr = n.exponent.accept_visitor(self);
-        xstr + "^" + &ystr
+        match (n.val.as_ref(), n.exponent.as_ref()) {
+            (Node::Constant(Constant::Fp(std::f64::consts::E)), _) => {
+                "exp(".to_owned() + &ystr + ")"
+            }
+            _ => {
+                let xstr = n.val.accept_visitor(self);
+                xstr + "^" + &ystr
+            }
+        }
     }
 
     fn build_negation(&self, n: &Negation) -> String {
         "-".to_owned() + &n.val.accept_visitor::<String>(self)
-    }
-
-    fn build_inverse(&self, n: &Inverse) -> String {
-        "1/".to_owned() + &n.val.accept_visitor::<String>(self)
     }
 
     fn build_constant(&self, c: &Constant) -> String {

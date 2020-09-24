@@ -8,24 +8,22 @@ pub struct Derivator {
 impl Visitor for Derivator {
     type Output = Node;
 
-    fn build_exponential(&self, n: &Exponential) -> Node {
-        let exp = n.exponent.accept_visitor(self);
-        exp * n
+    fn build_log(&self, n: &Log) -> Node {
+        let val = n.val.accept_visitor(self);
+        val / n.clone()
     }
 
     fn build_power(&self, n: &Power) -> Node {
         let x_dot = n.val.accept_visitor(self);
-        let new_exp = n.exponent.as_ref() - 1;
-        n.exponent.as_ref() * (x_dot ^ new_exp)
+        let y_dot = n.exponent.accept_visitor(self);
+        let scalar =
+            y_dot * Log::new(n.val.as_ref().clone()) + x_dot * n.exponent.as_ref() / n.val.as_ref();
+        n.clone() * scalar
     }
 
     fn build_negation(&self, n: &Negation) -> Node {
         let val = n.val.accept_visitor(self);
         Negation::new(val).into()
-    }
-
-    fn build_inverse(&self, n: &Inverse) -> Node {
-        -1 / (n.val.accept_visitor(self) ^ 2)
     }
 
     fn build_addition(&self, n: &Addition) -> Node {

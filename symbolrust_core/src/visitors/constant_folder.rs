@@ -24,12 +24,13 @@ impl ConstantFolder {
 
 impl Visitor for ConstantFolder {
     type Output = Node;
-    fn build_exponential(&self, n: &Exponential) -> Node {
-        let exponent = n.exponent.accept_visitor(self);
-        match exponent {
-            Node::Constant(Constant::Int(exp)) => std::f64::consts::E.powi(exp as i32).into(),
-            Node::Constant(Constant::Fp(exp)) => std::f64::consts::E.powf(exp).into(),
-            _ => Exponential::new(exponent).into(),
+
+    fn build_log(&self, n: &Log) -> Node {
+        let val = n.val.accept_visitor(self);
+        match val {
+            Node::Constant(Constant::Int(exp)) => (exp as f64).log2().into(),
+            Node::Constant(Constant::Fp(exp)) => exp.log2().into(),
+            _ => Log::new(val).into(),
         }
     }
 
@@ -39,11 +40,11 @@ impl Visitor for ConstantFolder {
         match (val, exponent) {
             (Node::Constant(Constant::Int(x)), Node::Constant(Constant::Int(y))) => {
                 // FIXME: error handling?
-                let abs_res = Constant::new(x.checked_pow(y.abs() as u32).unwrap());
+                let res = x.checked_pow(y.abs() as u32).unwrap();
                 if y < 0 {
-                    Inverse::new(abs_res).into()
+                    (1.0 / res as f64).into()
                 } else {
-                    abs_res.into()
+                    res.into()
                 }
             }
             (Node::Constant(Constant::Fp(x)), Node::Constant(Constant::Int(y))) => {
@@ -57,7 +58,7 @@ impl Visitor for ConstantFolder {
             }
             (x, Node::Constant(Constant::Int(y))) => match y {
                 0 => Constant::new(1).into(),
-                1 => x.clone(),
+                1 => x,
                 _ => n.clone().into(),
             },
             _ => n.clone().into(),
@@ -69,15 +70,6 @@ impl Visitor for ConstantFolder {
             Node::Constant(Constant::Int(i)) => Constant::new(-i).into(),
             Node::Constant(Constant::Fp(f)) => Constant::new(-f).into(),
             Node::Negation(nested_n) => nested_n.clone().into(),
-            _ => n.clone().into(),
-        }
-    }
-
-    fn build_inverse(&self, n: &Inverse) -> Node {
-        match n.val.as_ref() {
-            Node::Constant(Constant::Int(i)) => Constant::new(1.0 / *i as f64).into(),
-            Node::Constant(Constant::Fp(f)) => Constant::new(1.0 / f).into(),
-            Node::Inverse(nested_n) => nested_n.clone().into(),
             _ => n.clone().into(),
         }
     }

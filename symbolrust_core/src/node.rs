@@ -16,6 +16,5 @@ symbolrust_macros::boiler_plate_chef! {
     Variable,
     Constant,
     Negation,
-    Inverse,
-    Exponential,
+    Log,
 }
