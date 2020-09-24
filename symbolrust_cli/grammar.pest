@@ -13,7 +13,7 @@ operation = _{ add | subtract | multiply | divide | power }
     divide   = { "/" }
     power    = { "^" }
 
-expr = _{ term ~ (operation ~ term)* }
+expr = { term ~ (operation ~ term)* }
 term = _{ num | "(" ~ expr ~ ")" | function_call }
     function_call = { identifier ~ "(" ~ expr ~ ("," ~ expr )* ~ ")" }
 
