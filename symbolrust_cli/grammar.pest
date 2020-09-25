@@ -17,6 +17,7 @@ expr = { term ~ (operation ~ term)* }
 term = _{ num | "(" ~ expr ~ ")" | function_call }
     function_call = { identifier ~ "(" ~ expr ~ ("," ~ expr )* ~ ")" }
 
-calculation = _{ SOI? ~ expr }
+assignment = { identifier ~ "=" ~ expr }
+line = _{ SOI? ~ assignment | expr }
 
 WHITESPACE = _{ " " | "\t" | "\n" }
