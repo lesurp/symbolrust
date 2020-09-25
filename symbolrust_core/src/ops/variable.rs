@@ -16,4 +16,8 @@ impl Variable {
         let id = GLOBAL_CONTEXT.fetch_add(1, Ordering::Relaxed);
         Variable { id }
     }
+
+    pub fn as_raw(&self) -> usize {
+        self.id
+    }
 }

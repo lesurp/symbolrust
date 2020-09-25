@@ -20,6 +20,10 @@ impl ConstantFolder {
             _ => None,
         }
     }
+
+    pub fn fold(n: &Node) -> Node {
+        n.accept_visitor(&ConstantFolder)
+    }
 }
 
 impl Visitor for ConstantFolder {

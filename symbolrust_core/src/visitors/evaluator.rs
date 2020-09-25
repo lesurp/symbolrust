@@ -1,11 +1,11 @@
 use crate::node::{Node, Visitor};
 use crate::ops::*;
 
-pub struct Evaluator {
-    variables: VariableContext,
+pub struct Evaluator<'a> {
+    variables: &'a VariableContext,
 }
 
-impl Visitor for Evaluator {
+impl<'a> Visitor for Evaluator<'a> {
     type Output = Node;
 
     fn build_log(&self, n: &Log) -> Node {
@@ -22,7 +22,6 @@ impl Visitor for Evaluator {
     fn build_negation(&self, n: &Negation) -> Node {
         -n.val.accept_visitor(self)
     }
-
 
     fn build_addition(&self, n: &Addition) -> Node {
         let ms = n.members.iter().map(|m| m.accept_visitor(self)).collect();
@@ -50,9 +49,13 @@ impl Visitor for Evaluator {
     }
 }
 
-impl Evaluator {
-    pub fn new(variables: VariableContext) -> Self {
+impl<'a> Evaluator<'a> {
+    pub fn new(variables: &'a VariableContext) -> Self {
         Evaluator { variables }
+    }
+
+    pub fn evaluate(n: &Node, variables: &'a VariableContext) -> Node {
+        n.accept_visitor(&Evaluator::new(variables))
     }
 }
 
@@ -77,7 +80,7 @@ mod tests {
         // g(x, y) = x - 12y
         let expr = x + rhs;
 
-        let evaluator = Evaluator::new(variables);
+        let evaluator = Evaluator::new(&variables);
         let evaluate = expr.accept_visitor(&evaluator);
         let evaluate_folded = evaluate.accept_visitor(&ConstantFolder);
 
@@ -99,7 +102,7 @@ mod tests {
         let mut variables = VariableContext::new();
         variables.insert(x, 23.into());
 
-        let evaluator = Evaluator::new(variables);
+        let evaluator = Evaluator::new(&variables);
         let evaluate = expr.accept_visitor(&evaluator);
 
         let expected = 23 + -12 * y;
