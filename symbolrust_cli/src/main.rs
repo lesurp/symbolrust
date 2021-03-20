@@ -1,3 +1,6 @@
+// required because of pest generated code........
+#![allow(clippy::upper_case_acronyms)]
+
 use lazy_static::lazy_static;
 use pest::{
     iterators::Pair,
@@ -11,6 +14,8 @@ use std::io::{BufRead, Write};
 use symbolrust_core::prelude::*;
 use symbolrust_core::visitors::PrettyPrinterContext;
 
+// TODO: pest sucks pretty bad, ditch it (custom parser or another lib)
+// nom seems overkill, but mb?
 #[derive(Parser)]
 #[grammar = "../grammar.pest"] // relative to src
 struct MyParser;
@@ -47,7 +52,7 @@ impl VariableMap {
 }
 
 struct AstBuilder {
-    fn_to_ctor: HashMap<String, fn(Vec<Node>) -> Result<Node, ()>>,
+    fn_to_ctor: HashMap<String, fn(Vec<Node>) -> FunctionResult>,
 }
 
 lazy_static! {
