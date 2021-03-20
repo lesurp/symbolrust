@@ -1,4 +1,4 @@
-use crate::function::Function;
+use crate::function::{Function, FunctionError};
 use crate::node::Node;
 
 /// TODO: make some generic Binary struct so we can more easily implement visitors
@@ -16,11 +16,15 @@ impl Log {
 }
 
 impl Function for Log {
-    fn from_args(mut args: Vec<Node>) -> Result<Node, ()> {
+    fn from_args(mut args: Vec<Node>) -> Result<Node, FunctionError> {
         match args.len() {
             1 => Ok(Log::new(args.remove(0)).into()),
-            _ => Err(()),
+            _ => Err(FunctionError::WrongNumberArguments),
         }
+    }
+
+    fn description() -> &'static str {
+       "Natural logarithm function - takes only one strictly positive scalar as arg" 
     }
 }
 
