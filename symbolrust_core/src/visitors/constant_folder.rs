@@ -4,7 +4,7 @@ use crate::ops::*;
 pub struct ConstantFolder;
 impl ConstantFolder {
     pub fn fold_f64(n: &Node) -> Option<f64> {
-        let n = n.accept_visitor(&mut ConstantFolder);
+        let n = n.accept_visitor(&ConstantFolder);
         match n {
             Node::Constant(Constant::Int(i)) => Some(i as f64),
             Node::Constant(Constant::Fp(f)) => Some(f),
@@ -13,7 +13,7 @@ impl ConstantFolder {
     }
 
     pub fn fold_i64(n: &Node) -> Option<i64> {
-        let n = n.accept_visitor(&mut ConstantFolder);
+        let n = n.accept_visitor(&ConstantFolder);
         match n {
             Node::Constant(Constant::Int(i)) => Some(i),
             Node::Constant(Constant::Fp(f)) => Some(f as i64),
@@ -205,7 +205,7 @@ mod tests {
 
         let folded_fi = expr_fi.accept_visitor(&ConstantFolder);
         let folded_if = expr_if.accept_visitor(&ConstantFolder);
-        let expected = Constant::new(123.0354 * -12 as f64);
+        let expected = Constant::new(123.0354 * -12.0);
         assert_eq!(folded_fi, Node::Constant(expected));
         assert_eq!(folded_fi, folded_if);
     }
@@ -218,14 +218,14 @@ mod tests {
         {
             let expr_fi = lhs / rhs;
             let folded_fi = ConstantFolder::fold_f64(&expr_fi).unwrap();
-            let expected_fi = 123.0354 / -12 as f64;
+            let expected_fi = 123.0354 / -12.0;
             assert_eps!(folded_fi, expected_fi);
         }
 
         {
             let expr_if = rhs / lhs;
             let folded_if = ConstantFolder::fold_f64(&expr_if).unwrap();
-            let expected_if = -12 as f64 / 123.0354;
+            let expected_if = -12.0 / 123.0354;
             assert_eps!(folded_if, expected_if);
         }
     }

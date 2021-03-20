@@ -1,5 +1,3 @@
-#![feature(min_const_generics)]
-
 pub mod function;
 pub mod node;
 pub mod ops;

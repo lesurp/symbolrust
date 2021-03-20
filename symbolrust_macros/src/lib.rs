@@ -1,5 +1,3 @@
-#![feature(vec_remove_item)]
-
 mod into_impl;
 mod node;
 mod operators;

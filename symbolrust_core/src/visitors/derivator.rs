@@ -83,7 +83,7 @@ mod tests {
 
         // h(x) = g(x, f(x)) = x - 12 * (3 + x) = -(11x + 36)
         // dh/dx = -11
-        let evaluator = Evaluator::new(variables);
+        let evaluator = Evaluator::new(&variables);
         let derivator = Derivator::new(x);
         let expr = expr.accept_visitor(&evaluator);
         let expr = expr.accept_visitor(&derivator);
