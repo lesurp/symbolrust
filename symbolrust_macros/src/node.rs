@@ -18,6 +18,7 @@ pub(crate) fn node_enum(vars: &[Ident]) -> TokenStream {
     }
 }
 
+// TODO: make some default impl for visitor.visit(&Node) instead of creating some weird function here!
 pub(crate) fn impl_visitor_pattern(vars: &[Ident]) -> TokenStream {
     let mut acc = quote! {};
 

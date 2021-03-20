@@ -3,6 +3,9 @@ use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use syn::Ident;
 
+// HERE BE DRAGONS? Refactor this whole shite
+// (do I even want / need this..? If I'm always using some cli + dsl anyway, rather than rust's operators...)
+
 pub(crate) fn all_ops(operators: &[Operator]) -> TokenStream {
     let all_variants: Vec<Ident> = operators.iter().map(|o| o.ident.clone()).collect();
 
