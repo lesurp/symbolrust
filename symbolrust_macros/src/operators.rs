@@ -13,11 +13,7 @@ pub(crate) fn all_ops(operators: &[Operator]) -> TokenStream {
         .iter()
         .enumerate()
         .filter_map(|(i, op)| {
-            if let Some(language_ops) = &op.language_ops {
-                Some((&op.ident, language_ops, i))
-            } else {
-                None
-            }
+            op.language_ops.as_ref().map(|language_ops| (&op.ident, language_ops, i))
         })
         .fold(quote! {}, |q, (op_wrapper, language_ops, i)| {
             let mut all_variants = all_variants.clone();
