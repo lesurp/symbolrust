@@ -18,3 +18,16 @@ symbolrust_macros::boiler_plate_chef! {
     Negation,
     Log,
 }
+
+// TODO: hide being feature flag
+impl num_traits::identities::Zero for Node {
+    fn zero() -> Self { Node::Constant(Constant::Int(0)) }
+    fn is_zero(&self) -> bool { matches!(self, &Node::Constant(Constant::Int(0))) }
+}
+
+impl num_traits::identities::One for Node {
+    fn one() -> Self { Node::Constant(Constant::Int(1)) }
+    fn is_one(&self) -> bool { matches!(self, &Node::Constant(Constant::Int(1))) }
+}
+
+impl ndarray::ScalarOperand for Node {}

@@ -42,6 +42,44 @@ impl<'a> PrettyPrinter<'a> {
         let pp = PrettyPrinter::new(context);
         n.accept_visitor(&pp)
     }
+
+    // TODO: ndarray feature flag
+    pub fn print_array<S: ndarray::Data + ndarray::RawData<Elem = Node>>(
+        arr: &ndarray::ArrayBase<S, ndarray::Ix2>,
+    ) -> String {
+        let c = PrettyPrinterContext::default();
+        PrettyPrinter::print_array_with_context(arr, &c)
+    }
+
+    // TODO: ndarray feature flag
+    // TODO: can I be generic over array size ? Me think not (mb with some macro hell...)
+    pub fn print_array_with_context<S: ndarray::Data + ndarray::RawData<Elem = Node>>(
+        arr: &ndarray::ArrayBase<S, ndarray::Ix2>,
+        context: &PrettyPrinterContext,
+    ) -> String {
+        let mut s = String::from("[");
+        arr.indexed_iter().for_each(|((i, j), var)| {
+            if j == 0 {
+                if i != 0 {
+                    s += " ";
+                }
+                s += "[";
+            }
+            s += &PrettyPrinter::print_with_context(var, &context);
+            s += match (i + 1 == arr.nrows(), j + 1 == arr.ncols()) {
+                (false, true) => "],\n",
+                (true, true) => "]]\n",
+                (_, false) => ",\t",
+            };
+        });
+        s
+    }
+}
+
+impl std::fmt::Display for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", PrettyPrinter::print(self))
+    }
 }
 
 fn build_variadic<P: Visitor<Output = String>>(
@@ -80,9 +118,7 @@ impl<'a> Visitor for PrettyPrinter<'a> {
     fn build_power(&self, n: &Power) -> String {
         let ystr = n.exponent.accept_visitor(self);
         match (n.val.as_ref(), n.exponent.as_ref()) {
-            (Node::Constant(Constant::Fp(std::f64::consts::E)), _) => {
-                "exp(".to_owned() + &ystr + ")"
-            }
+            (Node::Constant(Constant::E), _) => "exp(".to_owned() + &ystr + ")",
             _ => {
                 let xstr = n.val.accept_visitor(self);
                 xstr + "^" + &ystr
