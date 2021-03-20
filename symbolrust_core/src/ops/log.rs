@@ -1,4 +1,4 @@
-use crate::function::{Function, FunctionError};
+use crate::function::{Function, FunctionError, FunctionResult};
 use crate::node::Node;
 
 /// TODO: make some generic Binary struct so we can more easily implement visitors
@@ -16,7 +16,7 @@ impl Log {
 }
 
 impl Function for Log {
-    fn from_args(mut args: Vec<Node>) -> Result<Node, FunctionError> {
+    fn from_args(mut args: Vec<Node>) -> FunctionResult {
         match args.len() {
             1 => Ok(Log::new(args.remove(0)).into()),
             _ => Err(FunctionError::WrongNumberArguments),

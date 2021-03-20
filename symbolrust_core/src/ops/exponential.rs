@@ -1,4 +1,4 @@
-use crate::function::{Function, FunctionError};
+use crate::function::{Function, FunctionError, FunctionResult};
 use crate::node::Node;
 use crate::ops::Power;
 
@@ -7,7 +7,7 @@ use crate::ops::Power;
 pub struct Exponential;
 
 impl Function for Exponential {
-    fn from_args(mut args: Vec<Node>) -> Result<Node, FunctionError> {
+    fn from_args(mut args: Vec<Node>) -> FunctionResult {
         match args.len() {
             1 => Ok(Power::exp(args.remove(0)).into()),
             _ => Err(FunctionError::WrongNumberArguments),
