@@ -4,6 +4,8 @@ use crate::node::Node;
 pub enum Constant {
     Fp(f64),
     Int(i64),
+    E,
+    Pi,
 }
 
 impl Constant {
@@ -15,39 +17,41 @@ impl Constant {
         match self {
             Constant::Fp(value) => value,
             Constant::Int(value) => value as f64,
+            Constant::E => std::f64::consts::E,
+            Constant::Pi => std::f64::consts::PI,
         }
     }
 }
 
-impl Into<Constant> for i64 {
-    fn into(self) -> Constant {
-        Constant::Int(self)
+impl From<i64> for Constant {
+    fn from(val: i64) -> Constant {
+        Constant::Int(val)
     }
 }
 
-impl Into<Constant> for f64 {
-    fn into(self) -> Constant {
-        Constant::Fp(self)
+impl From<f64> for Constant {
+    fn from(val: f64) -> Constant {
+        Constant::Fp(val)
     }
 }
 
-impl Into<Node> for i64 {
-    fn into(self) -> Node {
-        Node::Constant(Constant::Int(self))
+impl From<i64> for Node {
+    fn from(val: i64) -> Node {
+        Node::Constant(Constant::Int(val))
     }
 }
 
-impl Into<Node> for f64 {
-    fn into(self) -> Node {
-        Node::Constant(Constant::Fp(self))
+impl From<f64> for Node {
+    fn from(val: f64) -> Node {
+        Node::Constant(Constant::Fp(val))
     }
 }
 
 impl ToString for Constant {
     fn to_string(&self) -> String {
         match self {
-            Constant::Fp(f) => f.to_string(),
             Constant::Int(i) => i.to_string(),
+            f => f.as_float().to_string(),
         }
     }
 }
