@@ -3,7 +3,7 @@ identifier = @{ ASCII_ALPHA ~ ASCII_ALPHANUMERIC* }
 num = _{ constant | var }
     constant = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
         int = _{ ("+" | "-")? ~ ASCII_DIGIT+ }
-    var = { identifier ~ !"(" }
+    var = { identifier }
 
 
 operation = _{ add | subtract | multiply | divide | power }
