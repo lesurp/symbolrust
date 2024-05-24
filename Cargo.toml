@@ -1,7 +1,16 @@
-[workspace]
+[workspace.package]
+authors = ["Paul Lesur"]
+categories = []
+description = ""
+edition = "2021"
+license = "GPLv3"
+readme = "README"
+version = "0.1.0"
 
+[workspace]
 members = [
-    "symbolrust_core",
+    "symbolrust",
     "symbolrust_macros",
-    "symbolrust_cli",
+    "symbolrust_repl",
 ]
+resolver = "2"

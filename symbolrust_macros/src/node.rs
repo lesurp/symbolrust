@@ -34,7 +34,7 @@ pub(crate) fn impl_visitor_pattern(vars: &[Ident]) -> TokenStream {
 
     quote! {
         impl Node {
-            pub fn accept_visitor<T>(&self, v: &Visitor<Output=T>) -> T {
+            pub fn accept_visitor<T>(&self, v: &dyn Visitor<Output=T>) -> T {
                 match self {
                     #acc
                 }

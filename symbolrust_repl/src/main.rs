@@ -11,8 +11,8 @@ use pest::{
 use pest_derive::Parser;
 use std::collections::{hash_map::Entry, HashMap};
 use std::io::{BufRead, Write};
-use symbolrust_core::prelude::*;
-use symbolrust_core::visitors::PrettyPrinterContext;
+use symbolrust::prelude::*;
+use symbolrust::visitors::PrettyPrinterContext;
 
 // TODO: pest sucks pretty bad, ditch it (custom parser or another lib)
 // nom seems overkill, but mb?

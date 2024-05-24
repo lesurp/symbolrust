@@ -2,7 +2,6 @@ use crate::function::{Function, FunctionError, FunctionResult};
 use crate::node::Node;
 use crate::ops::Power;
 
-/// TODO: make some generic Binary struct so we can more easily implement visitors
 #[derive(Clone, Debug, PartialEq)]
 pub struct Exponential;
 
