@@ -8,7 +8,7 @@ version.workspace = true
 
 [dependencies]
 symbolrust = { path = "../symbolrust" }
-lalrpop-util = "0.20.2"
+lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
 
 [build-dependencies]
 lalrpop = "0.20.2"

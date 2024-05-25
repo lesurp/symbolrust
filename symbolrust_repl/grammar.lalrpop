@@ -1,0 +1,27 @@
+use std::str::FromStr;
+use symbolrust::prelude::{Multiplication, Addition, Constant, Variable, Power, Negation, Node};
+use super::VariableMap;
+
+grammar(v: &mut VariableMap);
+
+pub Expr: Box<Node> = {
+    #[precedence(level="0")] // Highest precedence
+    Term,
+    #[precedence(level="1")] #[assoc(side="left")]
+    <l:Expr> "*" <r:Expr> => Box::new(Multiplication::from_binary::<_, _, false>(*l, *r).into()),
+    <l:Expr> "/" <r:Expr> => Box::new(Multiplication::from_binary::<_, _, true>(*l, *r).into()),
+    #[precedence(level="2")] #[assoc(side="left")]
+    <l:Expr> "+" <r:Expr> => Box::new(Addition::from_binary::<_, _, false>(*l, *r).into()),
+    <l:Expr> "-" <r:Expr> => Box::new(Addition::from_binary::<_, _, true>(*l, *r).into()),
+};
+
+Term: Box<Node> = {
+    Integer => Box::new(<>),
+	Float => Box::new(<>),
+	Var => Box::new(<>),
+    "(" <Expr> ")",
+};
+
+Integer: Node = r"[0-9]+" => Constant::new(i64::from_str(<>).unwrap()).into();
+Float: Node = r"[0-9]+\.[0-9]+(e-?[0-9])?" => Constant::new(f64::from_str(<>).unwrap()).into();
+Var: Node = r"[a-zA-z][a-zA-Z_]*" => v.name(<>).into();
