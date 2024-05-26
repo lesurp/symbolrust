@@ -1,8 +1,6 @@
 use lalrpop_util::lalrpop_mod;
-use std::collections::{hash_map::Entry, HashMap};
 use std::io::{BufRead, Write};
 use symbolrust::prelude::*;
-use symbolrust::visitors::PrettyPrinterContext;
 
 lalrpop_mod!(grammar);
 

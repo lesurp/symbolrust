@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use symbolrust::prelude::{Multiplication, Addition, Constant, Variable, Power, Negation, Node, Context};
+use symbolrust::prelude::{Multiplication, Addition, Constant, Variable, Node, Context};
 use super::UserInput;
 
 grammar(c: &mut Context);

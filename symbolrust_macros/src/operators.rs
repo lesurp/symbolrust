@@ -13,14 +13,16 @@ pub(crate) fn all_ops(operators: &[Operator]) -> TokenStream {
         .iter()
         .enumerate()
         .filter_map(|(i, op)| {
-            op.language_ops.as_ref().map(|language_ops| (&op.ident, language_ops, i))
+            op.language_ops
+                .as_ref()
+                .map(|language_ops| (&op.ident, language_ops, i))
         })
         .fold(quote! {}, |q, (op_wrapper, language_ops, i)| {
             let mut all_variants = all_variants.clone();
             all_variants.remove(i);
             let mut next = quote! {};
             for language_op in language_ops {
-                let next2 = single_op(all_variants.clone(), language_op, &op_wrapper);
+                let next2 = single_op(all_variants.clone(), language_op, op_wrapper);
                 next = quote! {
                     #next
                    #next2

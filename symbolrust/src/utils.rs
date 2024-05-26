@@ -1,4 +1,4 @@
-#[allow(unused_macros)]
+#[macro_export]
 macro_rules! assert_eps {
     ($left:expr, $right:expr, $eps:expr) => {{
         let left = $left;
@@ -23,6 +23,7 @@ macro_rules! assert_eps {
     };
 }
 
+#[macro_export]
 macro_rules! vars {
     ($context:ident, $(let $var:ident;)+) => {
         $(

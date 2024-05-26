@@ -69,7 +69,7 @@ impl<'a> PrettyPrinter<'a> {
                 }
                 s += "[";
             }
-            s += &PrettyPrinter::print_with_context(var, &context);
+            s += &PrettyPrinter::print_with_context(var, context);
             s += match (i + 1 == arr.nrows(), j + 1 == arr.ncols()) {
                 (false, true) => "],\n",
                 (true, true) => "]]\n",
@@ -94,7 +94,7 @@ fn build_variadic<P: Visitor<Output = String>>(
 ) -> String {
     let mut out = String::new();
     for i in 0..m.len() {
-        let m_precedence = m[i].precedence().unwrap_or(std::u32::MAX);
+        let m_precedence = m[i].precedence().unwrap_or(u32::MAX);
         let m_str = m[i].accept_visitor(pretty_printer);
         let m_str = if m_precedence > precedence {
             m_str

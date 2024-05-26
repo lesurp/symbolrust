@@ -44,7 +44,7 @@ impl Visitor for ConstantFolder {
         match (val, exponent) {
             (Node::Constant(Constant::Int(x)), Node::Constant(Constant::Int(y))) => {
                 // FIXME: error handling?
-                let res = x.checked_pow(y.abs() as u32).unwrap();
+                let res = x.checked_pow(y.unsigned_abs() as u32).unwrap();
                 if y < 0 {
                     (1.0 / res as f64).into()
                 } else {

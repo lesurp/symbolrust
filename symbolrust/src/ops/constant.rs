@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::node::Node;
 
 #[derive(Clone, Debug, Copy, PartialEq)]
@@ -47,11 +49,11 @@ impl From<f64> for Node {
     }
 }
 
-impl ToString for Constant {
-    fn to_string(&self) -> String {
+impl Display for Constant {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Constant::Int(i) => i.to_string(),
-            f => f.as_float().to_string(),
+            Constant::Int(i) => i.fmt(f),
+            fp => fp.as_float().fmt(f),
         }
     }
 }

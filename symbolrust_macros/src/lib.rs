@@ -44,10 +44,7 @@ impl LanguageOp {
                                     _ => panic!("Wrong type, expected boolean"),
                                 }
                             } else {
-                                panic!(
-                                    "Unexpected token in LanguageOp definition: {}",
-                                    n.to_string()
-                                );
+                                panic!("Unexpected token in LanguageOp definition: {}", n);
                             }
                         }
                     }
@@ -91,12 +88,8 @@ impl Parse for Operator {
                         } else if &n.to_string() == "language_ops" {
                             match field.expr {
                                 syn::Expr::Array(arr) => {
-                                    language_ops = Some(
-                                        arr.elems
-                                            .iter()
-                                            .map(|elem| LanguageOp::from_elem(elem))
-                                            .collect(),
-                                    );
+                                    language_ops =
+                                        Some(arr.elems.iter().map(LanguageOp::from_elem).collect());
                                 }
                                 syn::Expr::Path(op_only) => {
                                     language_ops = Some(vec![LanguageOp {
