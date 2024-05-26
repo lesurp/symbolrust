@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn pretty_printer_add_var() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let expr = lhs + -12;
 
         let mut pp_context = PrettyPrinterContext::new();
@@ -195,7 +195,7 @@ mod tests {
 
     #[test]
     fn pretty_printer_mul_var() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let expr = lhs * -12;
 
         let mut pp_context = PrettyPrinterContext::new();
@@ -206,8 +206,8 @@ mod tests {
 
     #[test]
     fn pretty_printer_add_mul() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let x = Variable::new(0);
+        let y = Variable::new(1);
 
         let expr = x + 3 * y;
 
@@ -220,8 +220,8 @@ mod tests {
 
     #[test]
     fn pretty_printer_mul_add() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let x = Variable::new(0);
+        let y = Variable::new(1);
 
         let expr = (2 + x) * (3 + y);
 

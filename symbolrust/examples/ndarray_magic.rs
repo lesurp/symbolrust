@@ -3,16 +3,16 @@ use symbolrust::prelude::*;
 
 fn main() {
     let mut a = Array2::<Node>::zeros((2, 2));
-    let x = Variable::new();
+    let x = Variable::new(0);
     a[(0, 1)] = x.into();
-    let b = Array2::<Variable>::from_shape_fn((2, 2), |_| Variable::new());
+    let b = Array2::<Variable>::from_shape_fn((2, 2), |(i, j)| Variable::new(i + j * 2 + 11));
     let mut pp_context = PrettyPrinterContext::new();
 
     //  TODO: abstract this somehow
     b.indexed_iter()
         .for_each(|((i, j), var)| pp_context.name_var(*var, format!("b_{}_{}", i, j)));
 
-    let c = (a + b).map(|node| ConstantFolder::fold(node));
+    let c = (a + b).map(ConstantFolder::fold);
 
     let mut context = Context::new();
     context.assign(x, 23.into());

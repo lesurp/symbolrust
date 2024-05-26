@@ -97,8 +97,8 @@ mod tests {
 
     #[test]
     fn derive_incomplete() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let x = Variable::new(0);
+        let y = Variable::new(1);
 
         // g(x, y) = x - 12y
         let expr = x + y * (-12);

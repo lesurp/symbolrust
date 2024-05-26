@@ -15,9 +15,10 @@ impl Context {
     }
 
     pub fn new_var<S: Into<String>>(&mut self, n: S) -> Variable {
+        let id = self.n2v.len();
         match self.n2v.entry(n.into()) {
             Entry::Vacant(vac) => {
-                let var = Variable::new();
+                let var = Variable::new(id);
                 self.v2n.name_var(var, vac.key().clone());
                 *vac.insert(var)
             }

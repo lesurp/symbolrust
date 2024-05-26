@@ -276,7 +276,7 @@ mod tests {
 
     #[test]
     fn constant_folder_with_variable_add() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let rhs = -12;
         let expr = lhs + rhs;
 
@@ -286,7 +286,7 @@ mod tests {
 
     #[test]
     fn constant_folder_with_variable_sub() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let rhs = -12;
         let expr = lhs - rhs;
 
@@ -297,7 +297,7 @@ mod tests {
 
     #[test]
     fn constant_folder_with_variable_mul() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let rhs = -12;
         let expr = lhs * rhs;
 
@@ -307,7 +307,7 @@ mod tests {
 
     #[test]
     fn constant_folder_with_variable_div() {
-        let lhs = Variable::new();
+        let lhs = Variable::new(0);
         let rhs = -12;
         let expr = lhs / rhs;
 
