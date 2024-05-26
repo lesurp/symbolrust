@@ -21,6 +21,10 @@ impl PrettyPrinterContext {
     pub fn as_mut_map(&mut self) -> &mut HashMap<Variable, String> {
         &mut self.0
     }
+
+    pub fn print(&self, n: &Node) -> String {
+        PrettyPrinter::print_with_context(n, self)
+    }
 }
 
 pub struct PrettyPrinter<'a> {

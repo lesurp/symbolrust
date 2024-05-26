@@ -1,9 +1,9 @@
 use crate::node::{Node, Visitor};
 use crate::ops::*;
-use crate::prelude::VariableContext;
+use crate::prelude::Context;
 
 pub struct Evaluator<'a> {
-    variables: &'a VariableContext,
+    variables: &'a Context,
 }
 
 impl<'a> Visitor for Evaluator<'a> {
@@ -34,11 +34,11 @@ impl<'a> Visitor for Evaluator<'a> {
     }
 
     fn build_variable(&self, v: &Variable) -> Node {
-        if let Some(def) = self.variables.get(v) {
+        if let Some(def) = self.variables.value(v) {
             // TODO: this clone would not be needed is the trait did not take mut
             // is it reasonable to pay such price for visitors that do NOT mutate state?
             // should we duplicate traits so visitors can choose to be const or not?
-            def.clone().accept_visitor(self)
+            def.accept_visitor(self)
         } else {
             (*v).into()
         }
@@ -51,11 +51,11 @@ impl<'a> Visitor for Evaluator<'a> {
 }
 
 impl<'a> Evaluator<'a> {
-    pub fn new(variables: &'a VariableContext) -> Self {
+    pub fn new(variables: &'a Context) -> Self {
         Evaluator { variables }
     }
 
-    pub fn evaluate(n: &Node, variables: &'a VariableContext) -> Node {
+    pub fn evaluate(n: &Node, variables: &'a Context) -> Node {
         n.accept_visitor(&Evaluator::new(variables))
     }
 }
@@ -72,7 +72,7 @@ mod tests {
         let y = Variable::new();
         let rhs = -12 * y;
 
-        let mut variables = VariableContext::new();
+        let mut variables = Context::new();
         let fx = x + 3;
         variables.insert(y, fx);
 
@@ -100,7 +100,7 @@ mod tests {
         let expr = x + rhs;
         assert_eq!(expr, x + -12 * y);
 
-        let mut variables = VariableContext::new();
+        let mut variables = Context::new();
         variables.insert(x, 23.into());
 
         let evaluator = Evaluator::new(&variables);

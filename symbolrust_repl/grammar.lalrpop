@@ -1,8 +1,8 @@
 use std::str::FromStr;
-use symbolrust::prelude::{Multiplication, Addition, Constant, Variable, Power, Negation, Node};
-use super::{VariableMap, UserInput};
+use symbolrust::prelude::{Multiplication, Addition, Constant, Variable, Power, Negation, Node, Context};
+use super::UserInput;
 
-grammar(v: &mut VariableMap);
+grammar(c: &mut Context);
 
 pub Line: UserInput = {
     <Var> "=" <Expr> => UserInput::Assignment(<>),
@@ -29,4 +29,4 @@ Term: Node = {
 
 Integer: Constant = r"[0-9]+" => Constant::new(i64::from_str(<>).unwrap());
 Float: Constant = r"[0-9]+\.[0-9]+(e-?[0-9])?" => Constant::new(f64::from_str(<>).unwrap());
-Var: Variable = r"[a-zA-z][a-zA-Z_]*" => v.name(<>);
+Var: Variable = r"[a-zA-z][a-zA-Z_]*" => c.new_var(<>);

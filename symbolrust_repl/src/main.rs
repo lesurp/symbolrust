@@ -13,8 +13,7 @@ enum UserInput {
 }
 
 fn main() {
-    let mut var_map = VariableMap::new();
-    let mut var_context = VariableContext::new();
+    let mut context = Context::new();
 
     let stdin = std::io::stdin();
 
@@ -32,22 +31,23 @@ fn main() {
         };
 
         let user_input = grammar::LineParser::new()
-            .parse(&mut var_map, &line)
+            .parse(&mut context, &line)
             .unwrap_or_else(|e| panic!("{}", e));
 
         match user_input {
             UserInput::Assignment(v, e) => {
-                let evaluated = Evaluator::evaluate(&e, &var_context);
+                let evaluated = Evaluator::evaluate(&e, &context);
                 let folded = ConstantFolder::fold(&evaluated);
-                let as_str = PrettyPrinter::print_with_context(&folded, var_map.as_context());
-                let name = var_map.var(v).unwrap();
+                let as_str = context.print(&folded);
+                // Cannot panic because we register the name during parsing.
+                let name = context.get_name(v).unwrap();
                 println!("\t{} = {}", name, as_str);
-                var_context.insert(v, e);
+                context.assign(v, e);
             }
             UserInput::Expr(e) => {
-                let evaluated = Evaluator::evaluate(&e, &var_context);
+                let evaluated = Evaluator::evaluate(&e, &context);
                 let folded = ConstantFolder::fold(&evaluated);
-                let as_str = PrettyPrinter::print_with_context(&folded, var_map.as_context());
+                let as_str = context.print(&folded);
                 println!("\t{}", as_str);
             }
         }
