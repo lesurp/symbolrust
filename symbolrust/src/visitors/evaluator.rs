@@ -63,6 +63,7 @@ impl<'a> Evaluator<'a> {
 #[cfg(test)]
 mod tests {
     use super::Evaluator;
+    use crate::context::Context;
     use crate::ops::*;
     use crate::visitors::ConstantFolder;
 
@@ -74,9 +75,9 @@ mod tests {
 
         let mut variables = Context::new();
         let fx = x + 3;
-        variables.insert(y, fx);
+        variables.assign(y, fx);
 
-        variables.insert(x, 23.into());
+        variables.assign(x, 23.into());
 
         // g(x, y) = x - 12y
         let expr = x + rhs;
@@ -101,7 +102,7 @@ mod tests {
         assert_eq!(expr, x + -12 * y);
 
         let mut variables = Context::new();
-        variables.insert(x, 23.into());
+        variables.assign(x, 23.into());
 
         let evaluator = Evaluator::new(&variables);
         let evaluate = expr.accept_visitor(&evaluator);

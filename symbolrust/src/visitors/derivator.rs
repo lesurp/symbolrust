@@ -65,6 +65,7 @@ impl Derivator {
 #[cfg(test)]
 mod tests {
     use super::Derivator;
+    use crate::context::Context;
     use crate::ops::*;
     use crate::visitors::{ConstantFolder, Evaluator};
 
@@ -77,9 +78,9 @@ mod tests {
         // g(x, y) = x - 12y
         let expr = x + rhs;
 
-        let mut variables = VariableContext::new();
+        let mut variables = Context::new();
         let fx = x + 3;
-        variables.insert(y, fx);
+        variables.assign(y, fx);
 
         // h(x) = g(x, f(x)) = x - 12 * (3 + x) = -(11x + 36)
         // dh/dx = -11
