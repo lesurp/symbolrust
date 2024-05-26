@@ -1,8 +1,4 @@
-use crate::node::Node;
-use std::collections::HashMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
-
-pub type VariableContext = HashMap<Variable, Node>;
 
 static GLOBAL_CONTEXT: AtomicUsize = AtomicUsize::new(0);
 

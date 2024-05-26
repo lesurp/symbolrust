@@ -10,4 +10,5 @@ pub mod prelude {
     pub use super::ops::*;
     pub use super::visitors::*;
     pub use super::function::*;
+    pub use super::utils::{VariableContext, VariableMap};
 }

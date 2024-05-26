@@ -1,5 +1,6 @@
 use crate::node::{Node, Visitor};
 use crate::ops::*;
+use crate::prelude::VariableContext;
 
 pub struct Evaluator<'a> {
     variables: &'a VariableContext,
