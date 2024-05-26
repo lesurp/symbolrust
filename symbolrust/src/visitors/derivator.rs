@@ -71,14 +71,16 @@ mod tests {
 
     #[test]
     fn derive_complete() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let mut variables = Context::new();
+        vars! {variables,
+            let x;
+            let y;
+        }
         let rhs = -12 * y;
 
         // g(x, y) = x - 12y
         let expr = x + rhs;
 
-        let mut variables = Context::new();
         let fx = x + 3;
         variables.assign(y, fx);
 

@@ -64,16 +64,17 @@ impl<'a> Evaluator<'a> {
 mod tests {
     use super::Evaluator;
     use crate::context::Context;
-    use crate::ops::*;
     use crate::visitors::ConstantFolder;
 
     #[test]
     fn evaluate_complete() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let mut variables = Context::new();
+        vars! {variables,
+            let x;
+            let y;
+        }
         let rhs = -12 * y;
 
-        let mut variables = Context::new();
         let fx = x + 3;
         variables.assign(y, fx);
 
@@ -93,15 +94,17 @@ mod tests {
 
     #[test]
     fn evaluate_incomplete() {
-        let x = Variable::new();
-        let y = Variable::new();
+        let mut variables = Context::new();
+        vars! {variables,
+            let x;
+            let y;
+        }
         let rhs = -12 * y;
 
         // g(x, y) = x - 12y
         let expr = x + rhs;
         assert_eq!(expr, x + -12 * y);
 
-        let mut variables = Context::new();
         variables.assign(x, 23.into());
 
         let evaluator = Evaluator::new(&variables);

@@ -22,3 +22,11 @@ macro_rules! assert_eps {
         assert_eps!($left, $right, 1e-4);
     };
 }
+
+macro_rules! vars {
+    ($context:ident, $(let $var:ident;)+) => {
+        $(
+            let $var = $context.new_var(stringify!($var));
+        )+
+    };
+}
